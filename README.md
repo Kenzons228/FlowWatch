@@ -64,8 +64,9 @@ proxy to the API) on `http://localhost:5183`.
 
 ## Notes
 
-- Report data lives in `server/data/reports.json` (git-ignored, seeded with
-  sample Jakarta reports automatically on first run).
+- Report data lives in `server/data/reports.json` (git-ignored). The map
+  starts empty of user reports — no fabricated seed/demo data — and fills in
+  from real submissions plus a live GDACS global flood sync.
 - The risk score, the Home "AI Overview", and the description classifier are
   all deliberately rule-based (rain + report density + elevation, and
   keyword matching) — not ML, not a hosted LLM — so every number and
@@ -73,3 +74,19 @@ proxy to the API) on `http://localhost:5183`.
   dependency beyond the free public data sources above.
 - Route buffers: a route is flagged if it passes within 120m of a "flooded"
   report or 70m of a "caution" report.
+
+## Deploying
+
+`render.yaml` in the repo root is a [Render](https://render.com) Blueprint
+that deploys both services in one shot: an `flowwatch-api` web service
+(server) and an `flowwatch-client` static site (client), wired together via
+`VITE_API_BASE_URL`. On Render: **New → Blueprint**, pick this repo, review
+the two service names it proposes (rename if either is taken), and deploy.
+
+Two things to know about the free tier:
+
+- The JSON-file datastore isn't persistent storage on a free web service — a
+  redeploy or cold start resets locally-submitted reports. The live GDACS
+  sync repopulates global flood alerts automatically either way.
+- Free services spin down after 15 minutes idle, so the first request after
+  a while takes ~30–60s to wake up.

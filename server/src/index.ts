@@ -11,7 +11,9 @@ import priorityRouter from "./routes/priority.js";
 import environmentRouter from "./routes/environment.js";
 import { syncGdacsFloods } from "./lib/externalFloods.js";
 
-const PORT = Number(process.env.FLOWWATCH_API_PORT ?? 8787);
+// Hosts like Render/Railway assign a dynamic port via PORT and require the
+// app to bind to it; FLOWWATCH_API_PORT stays as the local-dev override.
+const PORT = Number(process.env.PORT ?? process.env.FLOWWATCH_API_PORT ?? 8787);
 const GDACS_SYNC_MS = 20 * 60 * 1000;
 
 const app = express();
